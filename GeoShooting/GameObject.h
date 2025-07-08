@@ -12,5 +12,5 @@ public:
 	virtual ~GameObject() = default;
 	// »æÖÆÎïÌå
 	virtual void draw() = 0;
-	virtual void update(ExMessage msg) = 0;
+	virtual void update() = 0;
 };
