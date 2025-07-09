@@ -11,9 +11,11 @@ public:
 	void update() override; // 更新敌人状态
 	bool isOffScreen() const; // 检查敌人是否超出屏幕范围
 	bool collideWith(GameObject* other); // 检查敌人是否与其他游戏对象碰撞
-private:
-	Player* targetPlayer; // 敌人的目标玩家
 	Vector direction; // 敌人方向
 	float speed; // 敌人速度
+private:
+	Player* targetPlayer; // 敌人的目标玩家
+
+
 	COLORREF enemyColor = RGB(255, 0, 0); // 敌人颜色
 };

@@ -28,8 +28,8 @@ void Enemy::update() {
 		float distanceToPlayer = direction.distance(Vector(targetPlayer->x, targetPlayer->y));
 		if (distanceToPlayer > 0) {
 			// 如果敌人与玩家之间有距离，则向玩家移动
-			modifiedDirection.x += (targetPlayer->x - x) / distanceToPlayer * 0.6f; // 向玩家方向微调
-			modifiedDirection.y += (targetPlayer->y - y) / distanceToPlayer * 0.6f; // 向玩家方向微调
+			modifiedDirection.x += (targetPlayer->x - x) * distanceToPlayer * 0.6f; // 向玩家方向微调
+			modifiedDirection.y += (targetPlayer->y - y) * distanceToPlayer * 0.6f; // 向玩家方向微调
 			modifiedDirection.normalize(); // 确保方向是单位向量
 		}
 	}

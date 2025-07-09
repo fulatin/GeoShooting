@@ -1,13 +1,19 @@
-#include "GraphicsHelper.h"
+#define WINVER 0x0A00
+#define _WIN32_WINNT 0x0A00
+
 #include "Constants.h"
 #include "Game.h"
 #include <graphics.h>
 #include <iostream>
 #include<easyx.h>
+
+#include <ShellScalingApi.h>	
+#pragma comment(lib, "Shcore.lib")
 using namespace std;
 using namespace GeoShooting;
-#pragma comment(lib, "gdiplus.lib")
 int main() {
+	// 阻止系统缩放
+	SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
 	initgraph(WINDOW_WIDTH, WINDOW_HEIGHT); // 初始化图形窗口
 
 	Game game; // 创建游戏对象

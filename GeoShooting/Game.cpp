@@ -1,4 +1,4 @@
-#include "Game.h"
+ï»¿#include "Game.h"
 #include "Constants.h"
 #include "GlobalVal.h"
 #include "Enemy.h"
@@ -7,125 +7,145 @@
 using namespace GeoShooting;
 using namespace std;
 Game::Game() :player(500,500,50,50) {
-	initgraph(WINDOW_WIDTH, WINDOW_HEIGHT); // ³õÊ¼»¯Í¼ĞÎ´°¿Ú
+	initgraph(WINDOW_WIDTH, WINDOW_HEIGHT); // åˆå§‹åŒ–å›¾å½¢çª—å£
 }
 Game::~Game() {
 
 }
-// ´ÓÆÁÄ»ÍâÏòÍæ¼ÒÉú³ÉËæ»úµĞÈË
+// ä»å±å¹•å¤–å‘ç©å®¶ç”Ÿæˆéšæœºæ•Œäºº
 void Game::generateRandomEnermy() {
-	// Éú³ÉÆÁÄ»ÍâµÄËæ»úÎ»ÖÃ
-	float offsetx = rand() % getwidth()*(rand()%2?-1:1); // Ëæ»úÉú³ÉxÆ«ÒÆÁ¿
-	float offsety = rand() % getheight() * (rand() % 2 ? -1 : 1); // Ëæ»úÉú³ÉyÆ«ÒÆÁ¿
+	// ç”Ÿæˆå±å¹•å¤–çš„éšæœºä½ç½®
+	float offsetx = rand() % getwidth()*(rand()%2?-1:1); // éšæœºç”Ÿæˆxåç§»é‡
+	float offsety = rand() % getheight() * (rand() % 2 ? -1 : 1); // éšæœºç”Ÿæˆyåç§»é‡
 	int x, y;
 	if(offsetx < 0) {
-		x = offsetx; // ÔÚÆÁÄ»ÍâËæ»úÉú³Éx×ø±ê
+		x = offsetx; // åœ¨å±å¹•å¤–éšæœºç”Ÿæˆxåæ ‡
 	} else {
-		x = getwidth() + offsetx; // ÔÚÆÁÄ»ÍâËæ»úÉú³Éx×ø±ê
+		x = getwidth() + offsetx; // åœ¨å±å¹•å¤–éšæœºç”Ÿæˆxåæ ‡
 	}
 	if(offsety < 0) {
-		y = offsety; // ÔÚÆÁÄ»ÍâËæ»úÉú³Éy×ø±ê
+		y = offsety; // åœ¨å±å¹•å¤–éšæœºç”Ÿæˆyåæ ‡
 	}
 	else {
-		y = getheight() + offsety; // ÔÚÆÁÄ»ÍâËæ»úÉú³Éy×ø±ê
+		y = getheight() + offsety; // åœ¨å±å¹•å¤–éšæœºç”Ÿæˆyåæ ‡
 	}
-	cout << x << " " << y << endl; // Êä³öÉú³ÉµÄ×ø±ê
-	float width = 50.0f; // µĞÈË¿í¶È
-	float height = 50.0f; // µĞÈË¸ß¶È
-	Vector direction(player.x-x+rand()%20, player.y-y+rand()%20); // Ö¸ÏòplayerµÄ·½Ïò
-	direction.normalize(); // È·±£·½ÏòÊÇµ¥Î»ÏòÁ¿
-	float speed = 750.0f + rand() % 500*(rand()%2?1:-1); // Ëæ»úÉú³ÉËÙ¶È
-	Enemy* enemy = new Enemy(x, y, width, height, direction, speed,&player); // ´´½¨ĞÂµÄµĞÈË¶ÔÏó
-	enemies.insert(enemy); // ½«µĞÈËÌí¼Óµ½¼¯ºÏÖĞ
+	cout << x << " " << y << endl; // è¾“å‡ºç”Ÿæˆçš„åæ ‡
+	float width = 50.0f; // æ•Œäººå®½åº¦
+	float height = 50.0f; // æ•Œäººé«˜åº¦
+	Vector direction(player.x-x+rand()%20, player.y-y+rand()%20); // æŒ‡å‘playerçš„æ–¹å‘
+	direction.normalize(); // ç¡®ä¿æ–¹å‘æ˜¯å•ä½å‘é‡
+	float speed = 750.0f + rand() % 500*(rand()%2?1:-1); // éšæœºç”Ÿæˆé€Ÿåº¦
+	Enemy* enemy = new Enemy(x, y, width, height, direction, speed,&player); // åˆ›å»ºæ–°çš„æ•Œäººå¯¹è±¡
+	enemies.insert(enemy); // å°†æ•Œäººæ·»åŠ åˆ°é›†åˆä¸­
 	//cout << "generate enemy" << endl;
 }
 void Game::run() {
-	float  lastTime = GetTickCount(); // »ñÈ¡µ±Ç°Ê±¼ä
-	BeginBatchDraw(); // ¿ªÊ¼ÅúÁ¿»æÖÆ
+	float  lastTime = GetTickCount(); // è·å–å½“å‰æ—¶é—´
+	BeginBatchDraw(); // å¼€å§‹æ‰¹é‡ç»˜åˆ¶
 	while (true) {
 		if ((float )GetTickCount() - lastTime - 1000 / 240.0 <= 1.0) {
 			Sleep(1);
 			continue;
 		}
 		setbkcolor(RGB(20,20,20));
-		cleardevice(); // Çå³ı»­²¼
+		cleardevice(); // æ¸…é™¤ç”»å¸ƒ
 
 
-		deltaTime = (GetTickCount() - lastTime) / 1000.0f; // ¼ÆËãÉÏÒ»Ö¡ºÍÕâÒ»Ö¡µÄÊ±¼ä²î
-		lastTime = GetTickCount(); // ¸üĞÂÉÏÒ»Ö¡Ê±¼ä
+		deltaTime = (GetTickCount() - lastTime) / 1000.0f; // è®¡ç®—ä¸Šä¸€å¸§å’Œè¿™ä¸€å¸§çš„æ—¶é—´å·®
+		lastTime = GetTickCount(); // æ›´æ–°ä¸Šä¸€å¸§æ—¶é—´
 
 
-		player.update(); // ¸üĞÂÍæ¼Ò×´Ì¬
-		player.draw(); // »æÖÆÍæ¼Ò
+		player.update(); // æ›´æ–°ç©å®¶çŠ¶æ€
+		player.draw(); // ç»˜åˆ¶ç©å®¶
 
 
-		// ¸üĞÂËùÓĞ×Óµ¯
+		// æ›´æ–°æ‰€æœ‰å­å¼¹
 		for (auto it = bullets.begin(); it != bullets.end();) {
 			Bullet* bullet = *it;
-			bullet->update(); // ¸üĞÂ×Óµ¯×´Ì¬
+			bullet->update(); // æ›´æ–°å­å¼¹çŠ¶æ€
 			if (bullet->isOffScreen()) {
-				it = bullets.erase(it); // Èç¹û×Óµ¯³¬³öÆÁÄ»·¶Î§£¬ÔòÉ¾³ıËü
+				it = bullets.erase(it); // å¦‚æœå­å¼¹è¶…å‡ºå±å¹•èŒƒå›´ï¼Œåˆ™åˆ é™¤å®ƒ
 				cout << "delete bullet" << endl;
-				delete bullet; // ÊÍ·ÅÄÚ´æ
+				delete bullet; // é‡Šæ”¾å†…å­˜
 			} else {
-				bullet->draw(); // »æÖÆ×Óµ¯
-				++it; // ÒÆ¶¯µ½ÏÂÒ»¸ö×Óµ¯
+				bullet->draw(); // ç»˜åˆ¶å­å¼¹
+				++it; // ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªå­å¼¹
 			}
 		}
-		// ¼ì²é×Óµ¯ÓëµĞÈËÅö×²
+		// æ£€æŸ¥å­å¼¹ä¸æ•Œäººç¢°æ’
 		
 		for (auto bulletIt = bullets.begin(); bulletIt != bullets.end();) {
 			Bullet* bullet = *bulletIt;
-			bool bulletDeleted = false; // ±ê¼Ç×Óµ¯ÊÇ·ñ±»É¾³ı
+			bool bulletDeleted = false; // æ ‡è®°å­å¼¹æ˜¯å¦è¢«åˆ é™¤
 			for (auto enemyIt = enemies.begin(); enemyIt != enemies.end();) {
 				Enemy* enemy = *enemyIt;
-				if (bullet->collideWith(enemy)) { // ¼ì²é×Óµ¯ÊÇ·ñÓëµĞÈËÅö×²
+				if (bullet->collideWith(enemy)) { // æ£€æŸ¥å­å¼¹æ˜¯å¦ä¸æ•Œäººç¢°æ’
 					cout << "bullet hit enemy" << endl;
-					enemyIt = enemies.erase(enemyIt); // É¾³ıµĞÈË
-					delete enemy; // ÊÍ·ÅÄÚ´æ
-					bulletDeleted = true; // ±ê¼Ç×Óµ¯±»É¾³ı
+					enemyIt = enemies.erase(enemyIt); // åˆ é™¤æ•Œäºº
+					delete enemy; // é‡Šæ”¾å†…å­˜
+					bulletDeleted = true; // æ ‡è®°å­å¼¹è¢«åˆ é™¤
 				} else {
-					++enemyIt; // ÒÆ¶¯µ½ÏÂÒ»¸öµĞÈË
+					++enemyIt; // ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªæ•Œäºº
 				}
 			}
 			if (bulletDeleted) {
-				bulletIt = bullets.erase(bulletIt); // É¾³ı×Óµ¯
-				delete bullet; // ÊÍ·ÅÄÚ´æ
+				bulletIt = bullets.erase(bulletIt); // åˆ é™¤å­å¼¹
+				delete bullet; // é‡Šæ”¾å†…å­˜
 			} else {
-				bullet->draw(); // »æÖÆ×Óµ¯
-				++bulletIt; // ÒÆ¶¯µ½ÏÂÒ»¸ö×Óµ¯
+				bullet->draw(); // ç»˜åˆ¶å­å¼¹
+				++bulletIt; // ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªå­å¼¹
 			}
 		}
 
-		// ¸üĞÂËùÓĞµĞÈË,²¢¼ÆËãÆÁÄ»ÄÚµĞÈËÊıÁ¿
-		inScreenEnermyCount = 0; // ÖØÖÃÆÁÄ»ÄÚµĞÈËÊıÁ¿
+		// æ›´æ–°æ‰€æœ‰æ•Œäºº,å¹¶è®¡ç®—å±å¹•å†…æ•Œäººæ•°é‡
+		inScreenEnermyCount = 0; // é‡ç½®å±å¹•å†…æ•Œäººæ•°é‡
 		for (auto it = enemies.begin(); it != enemies.end();) {
 			Enemy* enemy = *it;
-			enemy->update(); // ¸üĞÂµĞÈË×´Ì¬
-			// ³¬³öÆÁÄ»·¶Î§Á½±¶µÄµĞÈË½«±»É¾³ı
+			enemy->update(); // æ›´æ–°æ•ŒäººçŠ¶æ€
+			// è¶…å‡ºå±å¹•èŒƒå›´ä¸¤å€çš„æ•Œäººå°†è¢«åˆ é™¤
 			if (abs(enemy->x) >= 3 * getwidth() || abs(enemy->y) >= 3 * getheight()) {
-				it = enemies.erase(it); // Èç¹ûµĞÈË³¬³öÆÁÄ»·¶Î§£¬ÔòÉ¾³ıËü
+				it = enemies.erase(it); // å¦‚æœæ•Œäººè¶…å‡ºå±å¹•èŒƒå›´ï¼Œåˆ™åˆ é™¤å®ƒ
 				cout << "delete enemy" << endl;
-				delete enemy; // ÊÍ·ÅÄÚ´æ
+				delete enemy; // é‡Šæ”¾å†…å­˜
 			}
 			else {
-				enemy->draw(); // »æÖÆµĞÈË
-				++it; // ÒÆ¶¯µ½ÏÂÒ»¸öµĞÈË
+				enemy->draw(); // ç»˜åˆ¶æ•Œäºº
+				++it; // ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªæ•Œäºº
 			}
-			// ¼ì²éµĞÈËÊÇ·ñÔÚÆÁÄ»ÄÚ
+			// æ£€æŸ¥æ•Œäººæ˜¯å¦åœ¨å±å¹•å†…
 			if (enemy->x >= 0 && enemy->x <= getwidth() && enemy->y >= 0 && enemy->y <= getheight()) {
-				inScreenEnermyCount++; // Ôö¼ÓÆÁÄ»ÄÚµĞÈËÊıÁ¿
+				inScreenEnermyCount++; // å¢åŠ å±å¹•å†…æ•Œäººæ•°é‡
 			}
 		}
 
-		// ³¢ÊÔÉú³ÉĞÂµÄµĞÈË
+		// å°è¯•ç”Ÿæˆæ–°çš„æ•Œäºº
 		if (inScreenEnermyCount < maxEnermyCount && (GetTickCount() - lastEnermySpawnTime) / 1000.0f > enermySpawnRate) {
-			generateRandomEnermy(); // Éú³ÉĞÂµÄµĞÈË
-			lastEnermySpawnTime = GetTickCount(); // ¸üĞÂÉÏ´ÎÉú³ÉµĞÈËµÄÊ±¼ä
+			generateRandomEnermy(); // ç”Ÿæˆæ–°çš„æ•Œäºº
+			lastEnermySpawnTime = GetTickCount(); // æ›´æ–°ä¸Šæ¬¡ç”Ÿæˆæ•Œäººçš„æ—¶é—´
 		}
-
-		FlushBatchDraw(); // Ë¢ĞÂÅúÁ¿»æÖÆ
-		flushmessage(); // Ë¢ĞÂÏûÏ¢¶ÓÁĞ
+		// æ£€æµ‹æ•Œäººé—´çš„ç¢°æ’ï¼Œå¦‚æœæœ‰å°±é€šè¿‡åŠ¨é‡å®šç†æ¥è®¡ç®—ç¢°æ’åçš„é€Ÿåº¦
+		for (auto it1 = enemies.begin(); it1 != enemies.end(); ++it1) {
+			Enemy* enemy1 = *it1;
+			for (auto it2 = std::next(it1); it2 != enemies.end();) {
+				Enemy* enemy2 = *it2;
+				if (enemy1->collideWith(enemy2)) { // æ£€æŸ¥æ•Œäººæ˜¯å¦ç¢°æ’
+					cout << "enemy collide" << endl;
+					// è®¡ç®—ç¢°æ’åçš„é€Ÿåº¦
+					Vector v1(enemy1->direction.x * enemy1->speed, enemy1->direction.y * enemy1->speed);
+					Vector v2(enemy2->direction.x * enemy2->speed, enemy2->direction.y * enemy2->speed);
+					Vector newV1 = v1 - v2; // ç®€å•çš„ç¢°æ’å¤„ç†
+					Vector newV2 = v2 - v1; // ç®€å•çš„ç¢°æ’å¤„ç†
+					enemy1->direction = newV1 / newV1.length();
+					enemy2->direction = newV2 / newV2.length();
+					//it2 = enemies.erase(it2); // åˆ é™¤ç¬¬äºŒä¸ªæ•Œäºº
+					//delete enemy2; // é‡Šæ”¾å†…å­˜
+				} 
+					++it2; // ç§»åŠ¨åˆ°ä¸‹ä¸€æ•Œäºº
+				
+			}
+		}
+		FlushBatchDraw(); // åˆ·æ–°æ‰¹é‡ç»˜åˆ¶
+		flushmessage(); // åˆ·æ–°æ¶ˆæ¯é˜Ÿåˆ—
 	}
-	EndBatchDraw(); // ½áÊøÅúÁ¿»æÖÆ
+	EndBatchDraw(); // ç»“æŸæ‰¹é‡ç»˜åˆ¶
 }
