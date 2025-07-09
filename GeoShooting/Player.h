@@ -19,6 +19,11 @@ private:
 	float lastFireTime; // 上次射击时间
 	float fireCooldown; // 射击冷却时间
 	float frac = 0.90;
+	void updateTrangle();
+	COLORREF playerColor = RGB(0, 255, 0); // 玩家颜色
+	Vector trangle[3]; // 玩家三角形顶点
 	// 玩家的绘制对象
+	Vector playerDirection; // 玩家方向 确保是单位向量
+	Vector targetDirection; // 玩家目标方向
 	IMAGE playerSurface;
 };

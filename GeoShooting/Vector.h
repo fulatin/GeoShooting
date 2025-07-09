@@ -35,5 +35,11 @@ namespace GeoShooting
 				y /= len;
 			}
 		}
+		// ÏòÁ¿Ðý×ª
+		Vector rotate(float radians) {
+			float cosTheta = cos(radians);
+			float sinTheta = sin(radians);
+			return Vector(x * cosTheta - y * sinTheta, x * sinTheta + y * cosTheta);
+		}
 	};
 }
