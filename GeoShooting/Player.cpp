@@ -1,6 +1,5 @@
 #pragma once
 #include "Player.h"
-
 #include "GlobalVal.h"
 #include "Constants.h"
 #include "Bullet.h"
@@ -11,7 +10,7 @@ using namespace GeoShooting;
 
 Player::Player(float x, float y, float width, float height)
 	: GameObject(x, y, width, height), health(100.0f),
-	fireRate(1.0f), lastFireTime(0.0f),
+	fireRate(2), lastFireTime(0.0f),
 	playerSurface(2*width,2*height) {
 	playerDirection = { 1,0 }; // 初始方向向右
 	updateTrangle(); // 更新三角形顶点
