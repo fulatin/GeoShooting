@@ -10,7 +10,7 @@ Bullet::Bullet(float x, float y, float width, float height, Vector direction, fl
 	: GameObject(x, y, width, height), direction(direction), speed(speed), owner(owner) {
 	direction.normalize(); // 确保方向是单位向量
 	owner = _owner; // 设置子弹的拥有者
-	bulletColor = RGB(255, 0,0); // 设置子弹颜色为红色
+	bulletColor = RGB(255, 255,0); // 设置子弹颜色为红色
 
 }
 // 绘制子弹为一条线
