@@ -1,6 +1,6 @@
 #pragma once
 #include "Player.h"
-#include "GraphicsHelper.h"
+
 #include "GlobalVal.h"
 #include "Constants.h"
 #include<graphics.h>
@@ -11,23 +11,11 @@ using namespace GeoShooting;
 Player::Player(float x, float y, float width, float height)
 	: GameObject(x, y, width, height), health(100.0f),
 	fireRate(1.0f), lastFireTime(0.0f), fireCooldown(1.0f),playerSurface(2*width,2*height) {
-	IMAGE tmp(playerSurface);
 
-	// 创建有辉光效果的玩家
-
-	SetWorkingImage(&playerSurface);
-	GraphicsHelper::drawTriangle(width / 2, height / 2, width, RGB(255, 0, 0));
-	//setbkcolor(RGB(255, 255, 255));
-	//cleardevice();
-	SetWorkingImage(&tmp);
-	GraphicsHelper::drawTriangle(width/2, height/2, width, RGB(255, 0, 0));
-	GraphicsHelper::applyGlowWithGDI(&playerSurface, &tmp, 10, false);
-	SetWorkingImage(nullptr);
 }
 
 void Player::draw() {
-	GraphicsHelper::drawTransparentImage(x, y, &playerSurface, BLACK);
-	//putimage(x, y, &playerSurface);
+
 }
 
 void Player::update() {

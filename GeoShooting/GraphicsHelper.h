@@ -2,6 +2,10 @@
 #include <graphics.h>
 #define GDIPVER 0x0110 // 定义 GDI+ 版本
 // GraphicsHelper 命名空间包含所有自定义的绘图函数
+#ifndef ARGB
+#define ARGB(a, r, g, b) ((COLORREF)(((BYTE)(a) << 24) | ((BYTE)(r) << 16) | ((BYTE)(g) << 8) | ((BYTE)(b))))
+#endif
+#define GetAValue(color) ((BYTE)(((color) >> 24) & 0xFF))
 namespace GeoShooting {
     namespace GraphicsHelper {
         // 绘制带辉光的矩形 (用于敌人)
@@ -16,9 +20,9 @@ namespace GeoShooting {
         // 绘制用户界面 (UI)，包括分数和生命值
         void drawUI(int score, int playerHp);
 
-        // 新增：使用GDI+应用高质量辉光效果的函数
-        void applyGlowWithGDI(IMAGE* pDst, IMAGE* pSrc, float radius, bool shadow);
-        
-		void drawTransparentImage(int x, int y, IMAGE* img, COLORREF transparentColor);
+
+        void boxBlur(IMAGE* pImg, int radius);
+        void applyGlow(IMAGE* pDst, IMAGE* pSrc);
+        void transparentBlend(DWORD* dst, DWORD* src, int alpha);
     }
 }
