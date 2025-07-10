@@ -19,6 +19,17 @@ void Enemy::draw() {
 	setlinestyle(PS_SOLID, 2);
 	// 绘制敌人为一个矩形
 	rectangle(x - width / 2, y - height / 2, x + width / 2, y + height / 2);
+
+	// 如果血量不为满，就绘制血条
+	if (health < 100.0f) {
+		float healthBarWidth = width * (health / 100.0f); // 血条宽度根据生命值计算
+		setfillcolor(RGB(255, 0, 0)); // 设置血条颜色为红色
+		// 血条为矩形，位于敌人矩形上方
+		setlinecolor(RGB(255, 0, 0)); // 设置血条边框颜色为红色
+		setlinestyle(PS_SOLID, 1); // 设置血条边框样式
+		rectangle(x - width / 2, y - height / 2 - 20, x + width / 2, y - height / 2 - 10);
+		fillrectangle(x - width / 2, y - height / 2 - 20, x - width/2 + width*health/100.0, y - height / 2 - 10);
+	}
 }
 void Enemy::update() {
 	// 更新敌人位置,并将direction些许向玩家移动
@@ -53,7 +64,7 @@ bool Enemy::collideWith(GameObject* other) {
 bool Enemy::collideWith(Player* _player) {
 
 	// 检测三角形顶点与矩形的碰撞
-
+	if (isDead) return false; // 如果敌人已经死亡，则不检测碰撞
 	for (int i = 0; i < 3; ++i) {
 		Vector curr = targetPlayer->trangle[i];
 
@@ -63,4 +74,11 @@ bool Enemy::collideWith(Player* _player) {
 		}
 	}
 	return false; // 没有碰撞
+}
+
+void Enemy::getHitBy(Bullet *_bullet) {
+		health -= _bullet->getDamage(); // 减少敌人生命值
+		if(health <= 0) {
+			isDead = true; // 如果生命值小于等于0，则敌人死亡
+		}
 }

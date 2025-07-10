@@ -9,10 +9,15 @@ namespace GeoShooting {
 		~Game();
 		void generateRandomEnermy(); // 生成随机敌人
 		void generateRandomBuffBall(); // 生成随机Buff球
-		void run(); // 启动游戏循环
+		bool run(); // 启动游戏循环
+		// 游戏的开始界面，按任意键开始游戏
+		void beforeStart(); // 游戏开始前的界面
+		bool gameEnd(); // 游戏结束后显示分数并让玩家选择是否重新开始游戏
 	private:
 		void drawUI(); // 绘制用户界面
 		Player player; // 玩家对象
+
+		bool isGameStarted = false; // 游戏是否开始
 
 		// 玩家击败敌人会得分，发射子弹会减分，坚持时间会得分，与敌人擦肩而过会得分
 		float enermySpawnRate = 0.5f; // 敌人生成频率
@@ -26,7 +31,7 @@ namespace GeoShooting {
 
 		// 用来进行难度增加的变量
 		float phaseTimeCnt = 0.0f; // 阶段进行的时间计数器
-		float phaseDuration = 1.0f; // 每个阶段持续时间
+		float phaseDuration = 2.0f; // 每个阶段持续时间
 
 
 		IMAGE background; // 游戏背景图像

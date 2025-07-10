@@ -69,12 +69,18 @@ void Player::update() {
 	}
 
 	speedDir.normalize();
-	if(speedDir.length() < 0.1f) {
-		speed = speed * 0.96f; // 如果没有按键则减速
+
+	// 如果speedDir和速度反向就加大减速效果
+	if (speedDir.dot(speed) < 0) {
+		speedDir = speedDir * 1.5f;
+	} 
+	else if (speedDir.length() < 0.1f) {
+		speed = speed * 0.97f; // 如果没有按键则减速
 	}
-	else {
-		speed = speed + speedDir * acc * deltaTime; // 更新速度
-	}
+	
+	speed = speed + speedDir * acc * deltaTime; // 更新速度
+	
+	
 	if(speed.length()> mxSpeed) {
 		speed.normalize();
 		speed = speed * mxSpeed; // 限制速度

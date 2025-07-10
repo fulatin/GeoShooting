@@ -41,5 +41,9 @@ namespace GeoShooting
 			float sinTheta = sin(radians);
 			return Vector(x * cosTheta - y * sinTheta, x * sinTheta + y * cosTheta);
 		}
+		// 向量点积
+		float dot(const Vector& other) const {
+			return x * other.x + y * other.y;
+		}
 	};
 }

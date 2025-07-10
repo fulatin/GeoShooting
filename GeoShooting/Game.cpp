@@ -5,6 +5,7 @@
 #include "ShootSpeedBuffBall.h"
 #include <iostream>
 #include <cmath>
+#include <conio.h>
 using namespace GeoShooting;
 using namespace std;
 Game::Game() :player(500,500,50,50) {
@@ -51,7 +52,57 @@ void Game::generateRandomBuffBall() {
 	//cout << "generate buff ball" << endl;
 }
 
-void Game::run() {
+void Game::beforeStart() {
+	// 显示游戏开始前的界面
+	setbkcolor(RGB(20, 20, 20));
+	cleardevice(); // 清除画布
+	settextcolor(RGB(255, 255, 255)); // 设置文字颜色为白色
+	settextstyle(30, 0, _T("Consolas")); // 设置文字样式
+	// 显示文字确保居中
+	wchar_t text[] = L"Press any key to start the game!";
+	outtextxy((getwidth() - textwidth(text)) / 2, (getheight() - textheight(text)) / 2, text); // 居中显示文字
+	ExMessage msg;
+	getmessage(&msg, EX_KEY);
+	isGameStarted = true; // 设置游戏已开始
+}
+
+bool Game::gameEnd() {
+	// 游戏结束后显示分数并让玩家选择是否重新开始游戏
+	setbkcolor(RGB(20, 20, 20));
+	cleardevice(); // 清除画布
+	settextcolor(RGB(255, 255, 255)); // 设置文字颜色为白色
+	settextstyle(30, 0, _T("Consolas")); // 设置文字样式
+	wchar_t text[100];
+	swprintf(text, 100, L"Game Over! Your score: %.2f", score); // 显示得分
+	outtextxy((getwidth() - textwidth(text)) / 2, (getheight() - textheight(text)) / 2, text); // 居中显示文字
+	outtextxy((getwidth() - textwidth(L"Press R to restart or Q to quit")) / 2,
+		(getheight() - textheight(L"Press R to restart or Q to quit")) / 2 + 50,
+		L"Press R to restart or Q to quit"); // 显示重新开始或退出提示
+	FlushBatchDraw();
+	while (true) {
+		ExMessage msg;
+		getmessage(&msg,EX_KEY);
+		if (msg.message == WM_KEYDOWN) {
+			if (msg.vkcode == 'R' || msg.vkcode == 'r') {
+				score = 100.0f; // 重置得分
+				gameTime = 0.0f; // 重置游戏时间
+				enemies.clear(); // 清空敌人集合
+				bullets.clear(); // 清空子弹集合
+				buffBalls.clear(); // 清空Buff球集合
+
+				return true; // 玩家选择重新开始游戏
+			}
+			else if (msg.vkcode == 'Q' || msg.vkcode == 'q') {
+				return false; // 玩家选择退出游戏
+			}
+		}
+	}
+}
+
+
+bool Game::run() {
+	beforeStart(); // 显示游戏开始前的界面
+
 	float  lastTime = GetTickCount(); // 获取当前时间
 	BeginBatchDraw(); // 开始批量绘制
 	while (true) {
@@ -63,10 +114,18 @@ void Game::run() {
 		cleardevice(); // 清除画布
 
 
-		deltaTime = (GetTickCount() - lastTime) / 1000.0f; // 计算上一帧和这一帧的时间差
+		deltaTime = (GetTickCount() - lastTime) / 1000.0f*timeFactor; // 计算上一帧和这一帧的时间差
 		lastTime = GetTickCount(); // 更新上一帧时间
 		gameTime += deltaTime; // 更新游戏进行的总时间
-		phaseTimeCnt += deltaTime; // 更新阶段进行的时间计数器
+		phaseTimeCnt += deltaTime; // 更新阶段进行的时间计数
+
+		if(abs(timeFactor-1)< 0.01) {
+			timeFactor = 1.0f; // 重置时间系数为1.0，表示正常速度
+		}
+		else {
+			timeFactor += timeRestoreFactor*deltaTime; // 恢复时间系数
+
+		}
 
 		player.update(); // 更新玩家状态
 		player.draw(); // 绘制玩家
@@ -129,13 +188,18 @@ void Game::run() {
 			for (auto enemyIt = enemies.begin(); enemyIt != enemies.end();) {
 				Enemy* enemy = *enemyIt;
 				if (bullet->collideWith(enemy)) { // 检查子弹是否与敌人碰撞
-					cout << "bullet hit enemy" << endl;
-					enemyIt = enemies.erase(enemyIt); // 删除敌人
-					delete enemy; // 释放内存
-					bulletDeleted = true; // 标记子弹被删除
-
+					enemy->getHitBy(bullet); // 敌人被子弹击中
 					// 增加得分
-					score += 10.0f; // 击败敌人得分
+					if(enemy->getHealth()<= 0) {
+						// 如果敌人生命值小于等于0，则敌人死亡
+						cout << "enemy dead" << endl;
+						score += 500.0f; // 击败敌人得分
+						enemyIt = enemies.erase(enemyIt); // 删除敌人
+						delete enemy; // 释放内存
+					} else {
+						++enemyIt; // 移动到下一个敌人
+					}
+					
 				}
 				else {
 					++enemyIt; // 移动到下一个敌人
@@ -178,18 +242,17 @@ void Game::run() {
 		for (auto it = enemies.begin(); it != enemies.end();) {
 			Enemy* enemy = *it;
 			if (enemy->collideWith(&player)) { // 检查玩家是否与敌人碰撞
-				cout << "player hit enemy" << endl;
 				player.health -= 10.0f; // 减少玩家生命值
 				it = enemies.erase(it); // 删除敌人
 				delete enemy; // 释放内存
 				if (player.health <= 0) {
-					cout << "Game Over!" << endl; // 游戏结束
-					return; // 退出游戏循环
+					return gameEnd(); // 如果玩家生命值小于等于0，则游戏结束
 				}
+				timeFactor = 0.5f; // 减慢时间系数
 			} else {
-				if(( Vector(enemy->x,enemy->y)-Vector(player.x,player.y)).length() < 80.0f) {
+				if(( Vector(enemy->x,enemy->y)-Vector(player.x,player.y)).length() < 50.0f) {
 					// 如果敌人靠近玩家，则增加得分
-					score += 7.0f; // 与敌人擦肩而过得分
+					score += 4.0f; // 与敌人擦肩而过得分
 				}
 				++it; // 移动到下一个敌人
 			}
@@ -199,7 +262,6 @@ void Game::run() {
 		for (auto it = buffBalls.begin(); it != buffBalls.end();) {
 			BuffBall* buffBall = *it;
 			if (player.collideWith(buffBall)) { // 检查玩家是否与Buff球碰撞
-				cout << "player hit buff ball" << endl;
 				buffBall->applyBuff(&player); // 应用Buff效果
 				it = buffBalls.erase(it); // 删除Buff球
 				delete buffBall; // 释放内存
@@ -218,6 +280,7 @@ void Game::run() {
 			enermySpawnRate *= 0.9f; // 减少敌人生成间隔
 			maxEnermyCount += 10; // 增加最大敌人数量
 			maxBuffBallCount += 2; // 增加最大Buff球数量
+			buffBallSpawnRate *=0.9f; // 减少Buff球生成间隔
 			phaseTimeCnt = 0.0f; // 重置阶段时间计数器
 			phaseDuration *= 1.2f; // 增加阶段持续时间
 			phaseTimeCnt = 0.0f; // 重置阶段时间计数器
@@ -238,10 +301,6 @@ void Game::drawUI() {
 	wchar_t buffer[100];
 	swprintf(buffer,100, L"Health: %.2f", player.health);
 	outtextxy(10, 10, buffer ); // 绘制玩家生命值
-	swprintf(buffer, 100,L"Bullets: %d", (int)bullets.size());
-	outtextxy(10, 30, buffer); // 绘制子弹数量
-	swprintf(buffer, 100,L"Enemies: %d", (int)enemies.size());
-	outtextxy(10, 50, buffer); // 绘制敌人数量
 	swprintf(buffer, 100, L"Score: %.2f", score);
-	outtextxy(10, 70, buffer); // 绘制得分
+	outtextxy(10, 40, buffer); // 绘制得分
 }
