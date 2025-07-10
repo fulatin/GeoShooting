@@ -2,6 +2,7 @@
 #include "Constants.h"
 #include "GlobalVal.h"
 #include "Enemy.h"
+#include "ShootSpeedBuffBall.h"
 #include <iostream>
 #include <cmath>
 using namespace GeoShooting;
@@ -29,9 +30,9 @@ void Game::generateRandomEnermy() {
 	else {
 		y = getheight() + offsety; // 在屏幕外随机生成y坐标
 	}
-	cout << x << " " << y << endl; // 输出生成的坐标
-	float width = 50.0f; // 敌人宽度
-	float height = 50.0f; // 敌人高度
+	//cout << x << " " << y << endl; // 输出生成的坐标
+	float width = 50.0f + (rand() % 2 ? 1 : -1) *( rand() % 30); // 敌人宽度
+	float height = 50.0f + (rand() % 2 ? 1 : -1) * ( rand() % 30); // 敌人高度
 	Vector direction(player.x-x+rand()%20, player.y-y+rand()%20); // 指向player的方向
 	direction.normalize(); // 确保方向是单位向量
 	float speed = 750.0f + rand() % 500*(rand()%2?1:-1); // 随机生成速度
@@ -39,6 +40,17 @@ void Game::generateRandomEnermy() {
 	enemies.insert(enemy); // 将敌人添加到集合中
 	//cout << "generate enemy" << endl;
 }
+
+void Game::generateRandomBuffBall() {
+	// 生成屏幕内的随机位置
+	float x = rand() % getwidth(); // 随机生成x坐标
+	float y = rand() % getheight(); // 随机生成y坐标
+	//cout << x << " " << y << endl; // 输出生成的坐标
+	BuffBall* buffBall = new ShootSpeedBuffBall(x, y,0.3); // 创建新的Buff球对象
+	buffBalls.insert(buffBall); // 将Buff球添加到集合中
+	//cout << "generate buff ball" << endl;
+}
+
 void Game::run() {
 	float  lastTime = GetTickCount(); // 获取当前时间
 	BeginBatchDraw(); // 开始批量绘制
@@ -53,7 +65,8 @@ void Game::run() {
 
 		deltaTime = (GetTickCount() - lastTime) / 1000.0f; // 计算上一帧和这一帧的时间差
 		lastTime = GetTickCount(); // 更新上一帧时间
-
+		gameTime += deltaTime; // 更新游戏进行的总时间
+		phaseTimeCnt += deltaTime; // 更新阶段进行的时间计数器
 
 		player.update(); // 更新玩家状态
 		player.draw(); // 绘制玩家
@@ -72,30 +85,9 @@ void Game::run() {
 				++it; // 移动到下一个子弹
 			}
 		}
-		// 检查子弹与敌人碰撞
-		
-		for (auto bulletIt = bullets.begin(); bulletIt != bullets.end();) {
-			Bullet* bullet = *bulletIt;
-			bool bulletDeleted = false; // 标记子弹是否被删除
-			for (auto enemyIt = enemies.begin(); enemyIt != enemies.end();) {
-				Enemy* enemy = *enemyIt;
-				if (bullet->collideWith(enemy)) { // 检查子弹是否与敌人碰撞
-					cout << "bullet hit enemy" << endl;
-					enemyIt = enemies.erase(enemyIt); // 删除敌人
-					delete enemy; // 释放内存
-					bulletDeleted = true; // 标记子弹被删除
-				} else {
-					++enemyIt; // 移动到下一个敌人
-				}
-			}
-			if (bulletDeleted) {
-				bulletIt = bullets.erase(bulletIt); // 删除子弹
-				delete bullet; // 释放内存
-			} else {
-				bullet->draw(); // 绘制子弹
-				++bulletIt; // 移动到下一个子弹
-			}
-		}
+
+
+
 
 		// 更新所有敌人,并计算屏幕内敌人数量
 		inScreenEnermyCount = 0; // 重置屏幕内敌人数量
@@ -123,6 +115,43 @@ void Game::run() {
 			generateRandomEnermy(); // 生成新的敌人
 			lastEnermySpawnTime = GetTickCount(); // 更新上次生成敌人的时间
 		}
+
+		// 尝试生成新的Buff球
+		if (buffBalls.size() < maxBuffBallCount && (GetTickCount() - lastBuffBallSpawnTime) / 1000.0f > buffBallSpawnRate) {
+			generateRandomBuffBall(); // 生成新的Buff球
+			lastBuffBallSpawnTime = GetTickCount(); // 更新上次生成Buff球的时间
+		}
+
+		// 检查子弹与敌人碰撞
+		for (auto bulletIt = bullets.begin(); bulletIt != bullets.end();) {
+			Bullet* bullet = *bulletIt;
+			bool bulletDeleted = false; // 标记子弹是否被删除
+			for (auto enemyIt = enemies.begin(); enemyIt != enemies.end();) {
+				Enemy* enemy = *enemyIt;
+				if (bullet->collideWith(enemy)) { // 检查子弹是否与敌人碰撞
+					cout << "bullet hit enemy" << endl;
+					enemyIt = enemies.erase(enemyIt); // 删除敌人
+					delete enemy; // 释放内存
+					bulletDeleted = true; // 标记子弹被删除
+
+					// 增加得分
+					score += 10.0f; // 击败敌人得分
+				}
+				else {
+					++enemyIt; // 移动到下一个敌人
+				}
+			}
+			if (bulletDeleted) {
+				bulletIt = bullets.erase(bulletIt); // 删除子弹
+				delete bullet; // 释放内存
+			}
+			else {
+				bullet->draw(); // 绘制子弹
+				++bulletIt; // 移动到下一个子弹
+			}
+		}
+
+
 		// 检测敌人间的碰撞，如果有就通过动量定理来计算碰撞后的速度
 		for (auto it1 = enemies.begin(); it1 != enemies.end(); ++it1) {
 			Enemy* enemy1 = *it1;
@@ -144,8 +173,75 @@ void Game::run() {
 				
 			}
 		}
+
+		// 检测玩家与敌人碰撞
+		for (auto it = enemies.begin(); it != enemies.end();) {
+			Enemy* enemy = *it;
+			if (enemy->collideWith(&player)) { // 检查玩家是否与敌人碰撞
+				cout << "player hit enemy" << endl;
+				player.health -= 10.0f; // 减少玩家生命值
+				it = enemies.erase(it); // 删除敌人
+				delete enemy; // 释放内存
+				if (player.health <= 0) {
+					cout << "Game Over!" << endl; // 游戏结束
+					return; // 退出游戏循环
+				}
+			} else {
+				if(( Vector(enemy->x,enemy->y)-Vector(player.x,player.y)).length() < 80.0f) {
+					// 如果敌人靠近玩家，则增加得分
+					score += 7.0f; // 与敌人擦肩而过得分
+				}
+				++it; // 移动到下一个敌人
+			}
+		}
+
+		// 检测玩家与Buff球碰撞
+		for (auto it = buffBalls.begin(); it != buffBalls.end();) {
+			BuffBall* buffBall = *it;
+			if (player.collideWith(buffBall)) { // 检查玩家是否与Buff球碰撞
+				cout << "player hit buff ball" << endl;
+				buffBall->applyBuff(&player); // 应用Buff效果
+				it = buffBalls.erase(it); // 删除Buff球
+				delete buffBall; // 释放内存
+			} else {
+				buffBall->draw(); // 绘制Buff球
+				buffBall->update(); // 更新Buff球状态
+				++it; // 移动到下一个Buff球
+			}
+		}
+
+		// 根据生存时间增加得分
+		score += deltaTime * 0.1f; // 每秒增加0.1分
+		// 敌人生成速度和总量随着游戏时间增加
+		if(phaseTimeCnt> phaseDuration) {
+			// 每60秒增加一次难度
+			enermySpawnRate *= 0.9f; // 减少敌人生成间隔
+			maxEnermyCount += 10; // 增加最大敌人数量
+			maxBuffBallCount += 2; // 增加最大Buff球数量
+			phaseTimeCnt = 0.0f; // 重置阶段时间计数器
+			phaseDuration *= 1.2f; // 增加阶段持续时间
+			phaseTimeCnt = 0.0f; // 重置阶段时间计数器
+		}
+
+		// 绘制用户界面
+		drawUI(); // 绘制用户界面
 		FlushBatchDraw(); // 刷新批量绘制
 		flushmessage(); // 刷新消息队列
 	}
 	EndBatchDraw(); // 结束批量绘制
+}
+
+void Game::drawUI() {
+	// 绘制用户界面
+	settextcolor(RGB(255, 255, 255));
+	setbkmode(TRANSPARENT);
+	wchar_t buffer[100];
+	swprintf(buffer,100, L"Health: %.2f", player.health);
+	outtextxy(10, 10, buffer ); // 绘制玩家生命值
+	swprintf(buffer, 100,L"Bullets: %d", (int)bullets.size());
+	outtextxy(10, 30, buffer); // 绘制子弹数量
+	swprintf(buffer, 100,L"Enemies: %d", (int)enemies.size());
+	outtextxy(10, 50, buffer); // 绘制敌人数量
+	swprintf(buffer, 100, L"Score: %.2f", score);
+	outtextxy(10, 70, buffer); // 绘制得分
 }

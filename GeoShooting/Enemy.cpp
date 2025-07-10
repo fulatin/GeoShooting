@@ -28,8 +28,8 @@ void Enemy::update() {
 		float distanceToPlayer = direction.distance(Vector(targetPlayer->x, targetPlayer->y));
 		if (distanceToPlayer > 0) {
 			// 如果敌人与玩家之间有距离，则向玩家移动
-			modifiedDirection.x += (targetPlayer->x - x) * distanceToPlayer * 0.6f; // 向玩家方向微调
-			modifiedDirection.y += (targetPlayer->y - y) * distanceToPlayer * 0.6f; // 向玩家方向微调
+			modifiedDirection.x += (targetPlayer->x - x) / distanceToPlayer * 0.6f; // 向玩家方向微调
+			modifiedDirection.y += (targetPlayer->y - y) / distanceToPlayer * 0.6f; // 向玩家方向微调
 			modifiedDirection.normalize(); // 确保方向是单位向量
 		}
 	}
@@ -48,4 +48,19 @@ bool Enemy::collideWith(GameObject* other) {
 		   x + width / 2 > other->x &&
 		   y - height / 2 < other->y + other->height &&
 		   y + height / 2 > other->y;
+}
+
+bool Enemy::collideWith(Player* _player) {
+
+	// 检测三角形顶点与矩形的碰撞
+
+	for (int i = 0; i < 3; ++i) {
+		Vector curr = targetPlayer->trangle[i];
+
+		if ((curr.x >= x - width / 2) && (curr.x <= x + width / 2) &&
+			(curr.y >= y - height / 2) && (curr.y <= y + height / 2) ) {
+			return true; // 如果三角形顶点在敌人矩形内，则发生碰撞
+		}
+	}
+	return false; // 没有碰撞
 }

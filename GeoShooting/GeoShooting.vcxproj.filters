@@ -39,6 +39,9 @@
     <ClInclude Include="Enemy.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="BuffBall.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -57,6 +60,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ShootSpeedBuffBall.h">
+      <Filter>头文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ShootSpeedBuffBall.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -98,6 +98,8 @@ void Player::update() {
 		if(GetTickCount()/1000.0-lastFireTime > 1.0 / fireRate) {
 			shoot(); // 发射子弹
 			lastFireTime = GetTickCount() / 1000.0; // 更新上次射击时间
+			// 射速越快减的分越少
+			score -= 1.0f / fireRate; // 减少分数
 		}
 
 	}
