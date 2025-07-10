@@ -11,6 +11,8 @@ Enemy::Enemy(float x, float y, float width, float height, Vector direction, floa
 {
 	direction.normalize(); // 确保方向是单位向量
 	enemyColor = RGB(255, 0, 0); // 设置敌人颜色为红色
+	health = 100.0f + width * height / 1000.0f; // 初始化敌人生命值，宽度和高度影响生命值
+	health += gameTime * 10; // 随着游戏时间增加敌人生命值
 }
 
 // 绘制敌人为一个矩形, x , y 为矩形中心
@@ -22,13 +24,15 @@ void Enemy::draw() {
 
 	// 如果血量不为满，就绘制血条
 	if (health < 100.0f) {
-		float healthBarWidth = width * (health / 100.0f); // 血条宽度根据生命值计算
 		setfillcolor(RGB(255, 0, 0)); // 设置血条颜色为红色
 		// 血条为矩形，位于敌人矩形上方
 		setlinecolor(RGB(255, 0, 0)); // 设置血条边框颜色为红色
 		setlinestyle(PS_SOLID, 1); // 设置血条边框样式
-		rectangle(x - width / 2, y - height / 2 - 20, x + width / 2, y - height / 2 - 10);
-		fillrectangle(x - width / 2, y - height / 2 - 20, x - width/2 + width*health/100.0, y - height / 2 - 10);
+		// 绘制血条
+		// 血条宽度根据生命值计算
+
+		rectangle(x - healthBarWidth / 2, y - height / 2 - 20, x + healthBarWidth / 2, y - height / 2 - 10);
+		fillrectangle(x - healthBarWidth / 2, y - height / 2 - 20, x - healthBarWidth /2 + healthBarWidth *health/100.0, y - height / 2 - 10);
 	}
 }
 void Enemy::update() {

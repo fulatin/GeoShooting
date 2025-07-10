@@ -13,4 +13,5 @@ public:
 	// 绘制物体
 	virtual void draw() = 0;
 	virtual void update() = 0;
+	bool need2Delete = false; // 是否需要删除
 };

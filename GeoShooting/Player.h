@@ -21,11 +21,13 @@ public:
 			   y + height > other->y;
 	}
 	Vector speed;
-	float mxSpeed = 500.0f; // 玩家移动速度
-	float acc = 2000.0f; // 玩家加速度
+	float mxSpeed = 600.0f; // 玩家移动速度
+	float acc = 1500.0f; // 玩家加速度
 	float fireRate; // 玩家射击频率 一秒几次
 	float lastFireTime; // 上次射击时间
 	float frac = 0.7; // 玩家转动时的阻尼
+	float bulletDamage = 10.0f; // 子弹伤害
+	float bulletSpeed = 1000.0f; // 子弹速度
 	void updateTrangle();
 	COLORREF playerColor = RGB(0, 255, 0); // 玩家颜色
 	// 玩家的绘制对象

@@ -2,7 +2,11 @@
 #include "Constants.h"
 #include "GlobalVal.h"
 #include "Enemy.h"
+#include "BuffBall.h"
 #include "ShootSpeedBuffBall.h"
+#include "BulletDamageBuffBall.h"
+#include "BulletSpeedBuffBall.h"
+#include "HealBuffBall.h"
 #include <iostream>
 #include <cmath>
 #include <conio.h>
@@ -38,6 +42,7 @@ void Game::generateRandomEnermy() {
 	direction.normalize(); // 确保方向是单位向量
 	float speed = 750.0f + rand() % 500*(rand()%2?1:-1); // 随机生成速度
 	Enemy* enemy = new Enemy(x, y, width, height, direction, speed,&player); // 创建新的敌人对象
+	
 	enemies.insert(enemy); // 将敌人添加到集合中
 	//cout << "generate enemy" << endl;
 }
@@ -47,7 +52,28 @@ void Game::generateRandomBuffBall() {
 	float x = rand() % getwidth(); // 随机生成x坐标
 	float y = rand() % getheight(); // 随机生成y坐标
 	//cout << x << " " << y << endl; // 输出生成的坐标
-	BuffBall* buffBall = new ShootSpeedBuffBall(x, y,0.3); // 创建新的Buff球对象
+	int tp = rand() % BuffBall::buffTypeCnt; // 随机生成Buff球类型
+	BuffBall* buffBall = nullptr; // 初始化Buff球指针
+	switch (tp)
+	{
+	case BuffBall::ShootSpeedBuff: // 射击速度Buff
+		buffBall = new ShootSpeedBuffBall(x, y, 0.3); // 创建新的射击速度Buff球对象
+		break;
+	case BuffBall::BulletDamageBuff: // 子弹伤害Buff
+		buffBall = new BulletDamageBuffBall(x, y, 5.0f); // 创建新的子弹伤害Buff球对象
+		break;
+	case BuffBall::BulletSpeedBuff: // 子弹速度Buff
+		buffBall = new BulletSpeedBuffBall(x, y, 200.0f); // 创建新的子弹速度Buff球对象
+		break;
+	case BuffBall::HealBuff: // 治疗Buff
+		buffBall = new HealBuffBall(x, y, 10.0f); // 创建新的治疗Buff球对象
+		break;
+	default:
+		break;
+	}
+	if(buffBall == nullptr) {
+		return; // 如果Buff球创建失败，则返回
+	}
 	buffBalls.insert(buffBall); // 将Buff球添加到集合中
 	//cout << "generate buff ball" << endl;
 }
@@ -196,7 +222,6 @@ bool Game::run() {
 					// 增加得分
 					if(enemy->getHealth()<= 0) {
 						// 如果敌人生命值小于等于0，则敌人死亡
-						cout << "enemy dead" << endl;
 						score += 500.0f; // 击败敌人得分
 						enemyIt = enemies.erase(enemyIt); // 删除敌人
 						delete enemy; // 释放内存
@@ -256,7 +281,7 @@ bool Game::run() {
 			} else {
 				if(( Vector(enemy->x,enemy->y)-Vector(player.x,player.y)).length() < max(enemy->height,enemy->width)*1.5) {
 					// 如果敌人靠近玩家，则增加得分
-					timeFactor = 0.1f; // 减慢时间系数
+					timeFactor = 0.3f; // 减慢时间系数
 					score += 7.0f*deltaTime; // 与敌人擦肩而过得分
 				}
 				++it; // 移动到下一个敌人
@@ -308,4 +333,7 @@ void Game::drawUI() {
 	outtextxy(10, 10, buffer ); // 绘制玩家生命值
 	swprintf(buffer, 100, L"Score: %.2f", score);
 	outtextxy(10, 40, buffer); // 绘制得分
+	// 绘制游戏时间
+	swprintf(buffer, 100, L"Time: %.2f s", gameTime);
+	outtextxy(10, 70, buffer); // 绘制游戏时间
 }

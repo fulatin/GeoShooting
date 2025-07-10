@@ -124,6 +124,6 @@ void Player::update() {
 }
 void Player::shoot() {
 	// 创建新的子弹对象
-	Bullet* bullet = new Bullet(trangle[0].x,trangle[0].y, width , height , playerDirection, 1000.0f, this);
+	Bullet* bullet = new Bullet(trangle[0].x,trangle[0].y, width , height , playerDirection, bulletSpeed,bulletDamage, this);
 	bullets.insert(bullet); // 将子弹添加到全局子弹集合中
 }

@@ -6,8 +6,8 @@
 #include <iostream>
 using namespace std;
 using namespace GeoShooting;
-Bullet::Bullet(float x, float y, float width, float height, Vector direction, float speed, GameObject *_owner)
-	: GameObject(x, y, width, height), direction(direction), speed(speed), owner(owner) {
+Bullet::Bullet(float x, float y, float width, float height, Vector direction, float speed,float damage, GameObject *_owner)
+	: GameObject(x, y, width, height), direction(direction), speed(speed), owner(owner),damage(damage) {
 	direction.normalize(); // 确保方向是单位向量
 	owner = _owner; // 设置子弹的拥有者
 	bulletColor = RGB(0,0,255); // 设置子弹颜色为红色

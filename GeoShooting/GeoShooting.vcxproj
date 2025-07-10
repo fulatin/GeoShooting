@@ -126,19 +126,25 @@
   <ItemGroup>
     <ClInclude Include="BuffBall.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="BulletDamageBuffBall.h" />
+    <ClInclude Include="BulletSpeedBuffBall.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GlobalVal.h" />
+    <ClInclude Include="HealBuffBall.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="BulletDamegeBuffBall.cpp" />
+    <ClCompile Include="BulletSpeedBuffBall.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GlobalVal.cpp" />
+    <ClCompile Include="HealBuffBall.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ShootSpeedBuffBall.cpp" />

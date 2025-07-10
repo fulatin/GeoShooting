@@ -42,6 +42,15 @@
     <ClInclude Include="BuffBall.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="BulletDamageBuffBall.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletSpeedBuffBall.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HealBuffBall.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -66,6 +75,15 @@
       <Filter>头文件</Filter>
     </ClCompile>
     <ClCompile Include="ShootSpeedBuffBall.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletDamegeBuffBall.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletSpeedBuffBall.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HealBuffBall.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -24,4 +24,5 @@ private:
 	Player* targetPlayer; // 敌人的目标玩家
 	float health = 100.0f; // 敌人生命值
 	COLORREF enemyColor = RGB(255, 0, 0); // 敌人颜色
+	float healthBarWidth = 50.0f; // 敌人血条宽度
 };

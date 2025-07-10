@@ -1,3 +1,4 @@
+#pragma once
 #include "Buffball.h"
 
 class ShootSpeedBuffBall : public BuffBall {

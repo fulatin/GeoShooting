@@ -5,7 +5,7 @@
 using namespace GeoShooting;
 class Bullet : public GameObject {
 public:
-	Bullet(float x, float y, float width, float height, Vector direction, float speed,GameObject *owner);
+	Bullet(float x, float y, float width, float height, Vector direction, float speed,float damage,GameObject *owner);
 	void draw() override; // 绘制子弹
 	void update() override; // 更新子弹状态
 	bool isOffScreen() const; // 检查子弹是否超出屏幕范围
