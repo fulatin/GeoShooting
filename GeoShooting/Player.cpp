@@ -50,6 +50,17 @@ void Player::draw() {
 		line(trangle[i].x, trangle[i].y, trangle[(i + 1) % 3].x, trangle[(i + 1) % 3].y);
 	}
 
+	// 绘制玩家的血量条
+
+
+		float healthBarWidth = width * (health / 100.0f); // 血条宽度根据生命值计算
+		setfillcolor(RGB(0, 255, 0)); // 设置血条颜色为红色
+		// 血条为矩形，位于玩家三角形下方
+		setlinecolor(RGB(0, 255, 0)); // 设置血条边框颜色为红色
+		setlinestyle(PS_SOLID, 1); // 设置血条边框样式
+		rectangle(x - width / 2, y + height / 2 + 10, x + width / 2, y + height / 2 + 20);
+		fillrectangle(x - width / 2, y + height / 2 + 10, x - width/2 + healthBarWidth, y + height / 2 + 20);
+
 }
 
 void Player::update() {
@@ -72,13 +83,13 @@ void Player::update() {
 
 	// 如果speedDir和速度反向就加大减速效果
 	if (speedDir.dot(speed) < 0) {
-		speedDir = speedDir * 1.5f;
+		speedDir = speedDir * 3.0f;
 	} 
 	else if (speedDir.length() < 0.1f) {
 		speed = speed * 0.97f; // 如果没有按键则减速
 	}
 	
-	speed = speed + speedDir * acc * deltaTime; // 更新速度
+	speed = speed + speedDir * acc * realDeltaTime; // 更新速度
 	
 	
 	if(speed.length()> mxSpeed) {
@@ -87,8 +98,8 @@ void Player::update() {
 	}
 	// 更新位置
 	
-	x += speed.x * deltaTime;
-	y += speed.y * deltaTime;
+	x += speed.x * realDeltaTime;
+	y += speed.y * realDeltaTime;
 	
 	// 玩家鼠标控制方向
 	POINT mousePos;

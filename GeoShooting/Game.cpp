@@ -115,12 +115,16 @@ bool Game::run() {
 
 
 		deltaTime = (GetTickCount() - lastTime) / 1000.0f*timeFactor; // 计算上一帧和这一帧的时间差
+		realDeltaTime = (GetTickCount() - lastTime) / 1000.0f; // 计算实际上一帧和这一帧的时间差
 		lastTime = GetTickCount(); // 更新上一帧时间
 		gameTime += deltaTime; // 更新游戏进行的总时间
 		phaseTimeCnt += deltaTime; // 更新阶段进行的时间计数
 
 		if(abs(timeFactor-1)< 0.01) {
 			timeFactor = 1.0f; // 重置时间系数为1.0，表示正常速度
+		}
+		else if (timeFactor > 1.0f) {
+			timeFactor = 1.0f; // 如果时间系数大于1.0，则重置为1.0，表示正常速度
 		}
 		else {
 			timeFactor += timeRestoreFactor*deltaTime; // 恢复时间系数
@@ -248,11 +252,12 @@ bool Game::run() {
 				if (player.health <= 0) {
 					return gameEnd(); // 如果玩家生命值小于等于0，则游戏结束
 				}
-				timeFactor = 0.5f; // 减慢时间系数
+				
 			} else {
-				if(( Vector(enemy->x,enemy->y)-Vector(player.x,player.y)).length() < 50.0f) {
+				if(( Vector(enemy->x,enemy->y)-Vector(player.x,player.y)).length() < max(enemy->height,enemy->width)*1.5) {
 					// 如果敌人靠近玩家，则增加得分
-					score += 4.0f; // 与敌人擦肩而过得分
+					timeFactor = 0.1f; // 减慢时间系数
+					score += 7.0f*deltaTime; // 与敌人擦肩而过得分
 				}
 				++it; // 移动到下一个敌人
 			}

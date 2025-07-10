@@ -5,8 +5,11 @@
 #include "BuffBall.h"
 namespace GeoShooting {
 	// 全局变量
-	// 上一帧和这一帧的时间差
+	// 上一帧和这一帧的时间差 经过时间系数修正
 	extern float deltaTime;
+
+	extern float realDeltaTime; // 实际上一帧和这一帧的时间差
+
 	// 游戏进行的总时间
 	extern float gameTime;
 
