@@ -14,6 +14,8 @@
 using namespace std;
 using namespace GeoShooting;
 int main() {
+	FreeConsole(); // 隐藏控制台窗口
+	SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE); // 设置进程 DPI 感知模式
 	initgraph(WINDOW_WIDTH, WINDOW_HEIGHT); // 初始化图形窗口
 	bool quit = false; // 游戏是否退出
 	while(!quit) {
