@@ -3,6 +3,7 @@
 #include "Constants.h"
 #include <graphics.h>
 
+
 using namespace GeoShooting;
 Bullet::Bullet(float x, float y, float width, float height, Vector direction, float speed,float damage, GameObject *_owner)
 	: GameObject(x, y, width, height), direction(direction), speed(speed), owner(owner),damage(damage) {
@@ -43,7 +44,7 @@ bool Bullet::collideWith(Enemy* _enemy) {
 	// 更加精确的碰撞检测
 	Vector bulletCenter(x + width / 2, y + height / 2);
 	Vector enemyCenter(_enemy->x , _enemy->y );
-	return (bulletCenter - enemyCenter).length() < (width +max( _enemy->width ,_enemy->height)) ; // 检查子弹中心与敌人中心的距离是否小于两者半径之和
+	return (bulletCenter - enemyCenter).length() < (width +max( _enemy->width ,_enemy->height)) * 1.5; // 检查子弹中心与敌人中心的距离是否小于两者半径之和
 }
 
 bool Bullet::collideWith(Player* _player) {

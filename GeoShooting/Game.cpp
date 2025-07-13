@@ -66,14 +66,14 @@ void Game::generateRandomEnermy() {
 		y = getheight() + offsety; // 在屏幕外随机生成y坐标
 	}
 	//cout << x << " " << y << endl; // 输出生成的坐标
-	float width = 50.0f + (rand() % 2 ? 1 : -1) *( rand() % 30); // 敌人宽度
-	float height = 50.0f + (rand() % 2 ? 1 : -1) * ( rand() % 30); // 敌人高度
+	float width = 50.0f + (rand() % 2 ? 1 : -1) *( rand() % 10); // 敌人宽度
+	float height = 50.0f + (rand() % 2 ? 1 : -1) * ( rand() % 10); // 敌人高度
 	Vector direction(player.x-x+rand()%20, player.y-y+rand()%20); // 指向player的方向
 	direction.normalize(); // 确保方向是单位向量
-	float speed = 750.0f + rand() % 500*(rand()%2?1:-1); // 随机生成速度
+	float speed = 750.0f + rand() % 200*(rand()%2?1:-1)+gameTime; // 随机生成速度
 	Enemy* enemy = nullptr; // 初始化敌人指针
 	bool generateShootableEnemy = gameTime > 10.0f; // 游戏时间超过10秒后才有可能生成射击敌人
-	if(rand()%4==0&&generateShootableEnemy) { // 50%概率生成射击敌人
+	if(rand()%5==0&&generateShootableEnemy) { // 50%概率生成射击敌人
 		enemy = new ShootableEnemy(x, y, width, height, direction, speed, &player); // 创建新的射击敌人对象
 	} else {
 		enemy = new Enemy(x, y, width, height, direction, speed,&player); // 创建新的普通敌人对象
@@ -329,7 +329,7 @@ bool Game::run() {
 		for (auto it = enemies.begin(); it != enemies.end();) {
 			Enemy* enemy = *it;
 			if (enemy->collideWith(&player)) { // 检查玩家是否与敌人碰撞
-				player.health -= 10.0f; // 减少玩家生命值
+				player.health -= 5.0f+gameTime/10; // 减少玩家生命值
 				it = enemies.erase(it); // 删除敌人
 				delete enemy; // 释放内存
 				if (player.health <= 0) {
@@ -368,14 +368,13 @@ bool Game::run() {
 		score += deltaTime * 0.1f; // 每秒增加0.1分
 		// 敌人生成速度和总量随着游戏时间增加
 		if(phaseTimeCnt> phaseDuration) {
-			// 每60秒增加一次难度
-			enermySpawnRate *= 0.9f; // 减少敌人生成间隔
-			maxEnermyCount += 10; // 增加最大敌人数量
-			maxBuffBallCount += 2; // 增加最大Buff球数量
+			enermySpawnRate *= 0.93f; // 减少敌人生成间隔
+			maxEnermyCount += 4; // 增加最大敌人数量
+			maxBuffBallCount += 1; // 增加最大Buff球数量
 			buffBallSpawnRate *=0.9f; // 减少Buff球生成间隔
 			phaseTimeCnt = 0.0f; // 重置阶段时间计数器
-			phaseDuration *= 1.2f; // 增加阶段持续时间
-			phaseTimeCnt = 0.0f; // 重置阶段时间计数器
+			phaseDuration *= 1.1f; // 增加阶段持续时间
+
 		}
 
 		// 绘制用户界面
