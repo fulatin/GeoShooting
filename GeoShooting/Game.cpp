@@ -42,7 +42,7 @@ Game::Game() :player(500,500,50,50) {
 	wcscpy_s(gotAppliedSound, L"audio/phaserUp4.mp3"); // 设置Buff应用成功的音效
 	SoundManager::getInstance().loadSound(gotAppliedSound, L"shootSpeedBuff"); // 加载音效
 	
-	soundManager.setGlobalVolume(50);
+	soundManager.setGlobalVolume(100);
 }
 Game::~Game() {
 
@@ -185,8 +185,9 @@ bool Game::run() {
 		setbkcolor(RGB(20,20,20));
 		cleardevice(); // 清除画布
 
-		if(!isBGMStarted&&gameTime >= startBGMTime) {
-			mciSendString(L"play BGM repeat", NULL, 0, NULL); // 播放背景音乐
+		if(!isBGMStarted&& (gameTime >= startBGMTime) ) {
+			SoundManager::getInstance().playSound(L"BGM", 10000,true); // 播放背景音乐
+			isBGMStarted = true; // 设置BGM已开始播放
 		}
 
 		if (SoundManager::getInstance().getTotalSoundInstanceCount() > 10) {

@@ -33,7 +33,7 @@ namespace GeoShooting {
 		float phaseTimeCnt = 0.0f; // 阶段进行的时间计数器
 		float phaseDuration = 3.0f; // 每个阶段持续时间
 
-		float startBGMTimer = 0.0f; // 开始BGM的计时器
+
 		float startBGMTime = 5.0f; // 开始BGM的时间
 		bool isBGMStarted = false; // BGM是否开始播放
 		
