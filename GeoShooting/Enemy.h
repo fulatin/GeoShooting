@@ -19,7 +19,8 @@ public:
 	Vector direction; // 敌人方向
 	float speed; // 敌人速度
 	float getHealth() const { return health; } // 获取敌人生命值
-private:
+	
+protected:
 	bool isDead = false; // 敌人是否死亡
 	Player* targetPlayer; // 敌人的目标玩家
 	float health = 100.0f; // 敌人生命值

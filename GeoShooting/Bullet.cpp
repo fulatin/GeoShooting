@@ -3,8 +3,6 @@
 #include "Constants.h"
 #include <graphics.h>
 
-#include <iostream>
-using namespace std;
 using namespace GeoShooting;
 Bullet::Bullet(float x, float y, float width, float height, Vector direction, float speed,float damage, GameObject *_owner)
 	: GameObject(x, y, width, height), direction(direction), speed(speed), owner(owner),damage(damage) {
@@ -38,3 +36,21 @@ bool Bullet::collideWith(GameObject* other) {
 		   y < other->y + other->height &&
 		   y + height > other->y;
 }
+
+bool Bullet::collideWith(Enemy* _enemy) {
+	// 检查子弹是否与敌人碰撞
+	if (_enemy->isOffScreen()) return false; // 如果敌人超出屏幕范围，则不检测碰撞
+	// 更加精确的碰撞检测
+	Vector bulletCenter(x + width / 2, y + height / 2);
+	Vector enemyCenter(_enemy->x , _enemy->y );
+	return (bulletCenter - enemyCenter).length() < (width +max( _enemy->width ,_enemy->height)) ; // 检查子弹中心与敌人中心的距离是否小于两者半径之和
+}
+
+bool Bullet::collideWith(Player* _player) {
+	// 检查子弹是否与玩家碰撞
+	// 更加精确的碰撞检测
+	Vector bulletCenter(x + width / 2, y + height / 2);
+	Vector playerCenter(_player->x + _player->width / 2, _player->y + _player->height / 2);
+	return (bulletCenter - playerCenter).length() < (width + max(_player->width, _player->height)); // 检查子弹中心与玩家中心的距离是否小于两者半径之和
+}
+

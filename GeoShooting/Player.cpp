@@ -3,9 +3,9 @@
 #include "GlobalVal.h"
 #include "Constants.h"
 #include "Bullet.h"
+#include "SoundManager.h"
 #include<graphics.h>
-#include <iostream>
-using namespace std;
+
 using namespace GeoShooting;
 
 Player::Player(float x, float y, float width, float height)
@@ -14,6 +14,7 @@ Player::Player(float x, float y, float width, float height)
 	playerSurface(2*width,2*height) {
 	playerDirection = { 1,0 }; // 初始方向向右
 	updateTrangle(); // 更新三角形顶点
+	SoundManager::getInstance().loadSound(L"audio/laser.wav", L"playerShoot"); // 加载射击音效
 }
 
 
@@ -126,4 +127,6 @@ void Player::shoot() {
 	// 创建新的子弹对象
 	Bullet* bullet = new Bullet(trangle[0].x,trangle[0].y, width , height , playerDirection, bulletSpeed,bulletDamage, this);
 	bullets.insert(bullet); // 将子弹添加到全局子弹集合中
+	SoundManager::getInstance().playSound(L"playerShoot", 1000); // 播放射击音效
+
 }

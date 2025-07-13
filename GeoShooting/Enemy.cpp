@@ -2,8 +2,6 @@
 #include "GlobalVal.h"
 #include "Constants.h"
 #include <graphics.h>
-#include <iostream>
-using namespace std;
 
 Enemy::Enemy(float x, float y, float width, float height, Vector direction, float speed,Player *_target)
 	: GameObject(x, y, width, height), direction(direction), speed(speed) 
@@ -40,7 +38,8 @@ void Enemy::update() {
 	Vector modifiedDirection = direction; // 复制方向
 	if (targetPlayer) {
 		// 计算敌人和玩家之间的距离
-		float distanceToPlayer = direction.distance(Vector(targetPlayer->x, targetPlayer->y));
+		float distanceToPlayer = direction.distance(Vector(targetPlayer->x, targetPlayer->y))/30;
+
 		if (distanceToPlayer > 0) {
 			// 如果敌人与玩家之间有距离，则向玩家移动
 			modifiedDirection.x += (targetPlayer->x - x) / distanceToPlayer * 0.6f; // 向玩家方向微调

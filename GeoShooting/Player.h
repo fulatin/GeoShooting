@@ -12,6 +12,7 @@ public:
 	void draw() override; // 绘制玩家
 	void update() override; // 更新玩家状态
 	void shoot(); // 玩家射击 x,y 为射击位置
+	Vector getPosition() const { return Vector(x, y); } // 获取玩家位置
 	// 检测玩家是否与其他游戏对象碰撞
 	bool collideWith(GameObject* other) {
 		// 简单的矩形碰撞检测

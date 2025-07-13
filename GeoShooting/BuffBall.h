@@ -5,6 +5,9 @@
 #include "GameObject.h"
 #include "Vector.h"
 #include "Player.h"
+#include "Animation.h"
+#include "SoundManager.h"
+#include <functional>
 class BuffBall : public GameObject {
 public:
 	enum BuffType {
@@ -15,9 +18,10 @@ public:
 		// 可以添加更多的Buff类型
 	};
 	const static int buffTypeCnt = 4; // Buff类型数量 
-	BuffBall(float x, float y): GameObject(x, y, 50.0f, 50.0f), buffColor(RGB(255, 255, 0)), radius(25.0f) {
-		// 初始化Buff球的颜色和半径
-	}
+	//BuffBall(float x, float y): GameObject(x, y, 50.0f, 50.0f), buffColor(RGB(255, 255, 0)), radius(25.0f),showEffect(2) {
+	//	// 初始化Buff球的颜色和半径
+	//}
+	BuffBall(float x, float y);
 	virtual ~BuffBall() = default; // 虚析构函数
 	virtual void draw() = 0; // 绘制Buff球
 	virtual void update() = 0; // 更新Buff球状态
@@ -27,7 +31,8 @@ protected:
 	float radius; // Buff球半径
 	bool applied = false; // Buff是否已应用
 	wchar_t buffName[20]; // Buff名称
-
+	Animation<std::function<void()> > showEffect; // Buff球显示效果动画
+	void showEffectUpdFunc();
 
 
 

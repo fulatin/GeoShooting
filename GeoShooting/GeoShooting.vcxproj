@@ -124,6 +124,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="BuffBall.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="BulletDamageBuffBall.h" />
@@ -135,9 +136,12 @@
     <ClInclude Include="GlobalVal.h" />
     <ClInclude Include="HealBuffBall.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="ShootableEnemy.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BuffBall.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="BulletDamegeBuffBall.cpp" />
     <ClCompile Include="BulletSpeedBuffBall.cpp" />
@@ -147,8 +151,10 @@
     <ClCompile Include="HealBuffBall.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="ShootableEnemy.cpp" />
     <ClCompile Include="ShootSpeedBuffBall.cpp" />
     <ClCompile Include="ShootSpeedBuffBall.h" />
+    <ClCompile Include="SoundManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

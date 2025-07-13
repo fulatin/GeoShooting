@@ -4,11 +4,12 @@
 #include "Constants.h"
 #include "Game.h"
 #include <graphics.h>
-#include <iostream>
+
 #include<easyx.h>
 
 #include <ShellScalingApi.h>	
 #pragma comment(lib, "Shcore.lib")
+#pragma comment(lib, "winmm.lib") // Á´½Ó winmm.lib
 using namespace std;
 using namespace GeoShooting;
 int main() {

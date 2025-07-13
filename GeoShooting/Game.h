@@ -22,7 +22,7 @@ namespace GeoShooting {
 		// 玩家击败敌人会得分，发射子弹会减分，坚持时间会得分，与敌人擦肩而过会得分
 		float enermySpawnRate = 0.5f; // 敌人生成频率
 		float lastEnermySpawnTime = 0.0f; // 上次生成敌人的时间
-		int maxEnermyCount = 100; // 最大敌人数量
+		int maxEnermyCount = 70; // 最大敌人数量
 		int inScreenEnermyCount = 0; // 屏幕内敌人数量
 
 		int maxBuffBallCount = 10; // 最大Buff球数量
@@ -31,8 +31,11 @@ namespace GeoShooting {
 
 		// 用来进行难度增加的变量
 		float phaseTimeCnt = 0.0f; // 阶段进行的时间计数器
-		float phaseDuration = 2.0f; // 每个阶段持续时间
+		float phaseDuration = 3.0f; // 每个阶段持续时间
 
+		float startBGMTimer = 0.0f; // 开始BGM的计时器
+		float startBGMTime = 5.0f; // 开始BGM的时间
+		bool isBGMStarted = false; // BGM是否开始播放
 
 		IMAGE background; // 游戏背景图像
 		DWORD *canvas; // 游戏画布
